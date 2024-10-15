@@ -1,0 +1,51 @@
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Create ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "MessageButtonGui"
+screenGui.Parent = playerGui
+
+-- Create TextButton
+local button = Instance.new("TextButton")
+button.Name = "MessageButton"
+button.Size = UDim2.new(0, 100, 0, 50) -- Size of the button
+button.Position = UDim2.new(0, 10, 0.5, -25) -- Position on the left side
+button.Text = "Ultimate"
+button.Parent = screenGui
+
+-- Messages to be sent
+local messages = {
+    "Didn't I tell you?",
+    "I cannot die because,",
+    "I truly am",
+    "the honored one"
+}
+
+-- Function to send message
+local function sendMessage(message)
+    game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
+end
+
+-- Connect Ultimate 
+button.MouseButton1Click:Connect(function()
+    -- Execute the first additional script
+    local keyPressArgs = {
+        Goal = "KeyPress",
+        Key = Enum.KeyCode.G
+    }
+    game:GetService("Players").LocalPlayer.Character.Communicate:FireServer(keyPressArgs)
+
+    -- Execute the second additional emote
+    local emoteArgs = {
+        Goal = "Emote",
+        Emote = "Honored"
+    }
+    game:GetService("Players").LocalPlayer.Character.Communicate:FireServer(emoteArgs)
+
+    -- Send each message with a delay
+    for _, message in ipairs(messages) do
+        sendMessage(message)
+        wait(1) -- Delay between messages
+    end
+end)
